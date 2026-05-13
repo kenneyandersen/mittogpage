@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mittog - Stationer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f5f7; color: #333; height: 100vh; display: flex; flex-direction: column; }
+  header { background: #1a2a3a; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+  header h1 { font-size: 1.2rem; font-weight: 600; white-space: nowrap; }
+  select { padding: 8px 12px; font-size: 0.95rem; border: 1px solid #556; border-radius: 6px; background: #fff; min-width: 220px; cursor: pointer; }
+  .hint { color: #8aa; font-size: 0.85rem; }
+  .container { flex: 1; display: flex; gap: 12px; padding: 12px; min-height: 0; }
+  .container iframe { flex: 1; border: none; border-radius: 8px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.12); height: 100%; }
+  .empty { flex: 1; display: flex; align-items: center; justify-content: center; color: #999; font-size: 1.1rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Mittog Stationer</h1>
+  <select id="stationSelect">
+    <option value="">-- Vælg station --</option>
+  </select>
+  <span class="hint" id="hint">Vælg en station for at se sider</span>
+</header>
+
+<div class="container" id="content">
+  <div class="empty">Vælg en station ovenfor</div>
+</div>
+
+<script>
+  // ============================================================
+  //  STATION CONFIGURATION
+  //  Add/edit stations here. Each station has a name and an
+  //  array of page URLs (1, 2, or more).
+  // ============================================================
+  const STATIONS = [
+    {
+      name: "København H",
+      pages: [
+        "https://mittog.dk/da/departures/KH/"
+      ]
+    },
+    {
+      name: "Odense",
+      pages: [
+        "https://mittog.dk/da/departures/OD/"
+      ]
+    },
+    {
+      name: "Aarhus H",
+      pages: [
+        "https://mittog.dk/da/departures/AR/"
+      ]
+    },
+    {
+      name: "Aalborg",
+      pages: [
+        "https://mittog.dk/da/departures/AL/"
+      ]
+    },
+    {
+      name: "Nørreport",
+      pages: [
+        "https://mittog.dk/da/departures/KN/",
+        "https://mittog.dk/da/departures/KN/stog"
+      ]
+    },
+    {
+      name: "Google (test)",
+      pages: [
+        "https://www.google.com"
+      ]
+    }
+    // Add more stations as needed:
+    // {
+    //   name: "Station Name",
+    //   pages: [
+    //     "https://mittog.dk/...",
+    //     "https://mittog.dk/..."
+    //   ]
+    // },
+  ];
+  // ============================================================
+
+  const select = document.getElementById("stationSelect");
+  const content = document.getElementById("content");
+  const hint = document.getElementById("hint");
+
+  // Populate dropdown
+  STATIONS.forEach((station, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = station.name;
+    select.appendChild(opt);
+  });
+
+  select.addEventListener("change", () => {
+    const idx = select.value;
+    if (idx === "") {
+      content.innerHTML = '<div class="empty">Vælg en station ovenfor</div>';
+      hint.textContent = "Vælg en station for at se sider";
+      return;
+    }
+    const station = STATIONS[idx];
+    hint.textContent = station.pages.length + (station.pages.length === 1 ? " side" : " sider");
+    content.innerHTML = "";
+    station.pages.forEach(url => {
+      const iframe = document.createElement("iframe");
+      iframe.src = url;
+      iframe.setAttribute("loading", "lazy");
+      content.appendChild(iframe);
+    });
+  });
+</script>
+
+</body>
+</html>
