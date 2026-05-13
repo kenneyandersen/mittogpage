@@ -12,6 +12,9 @@
   select { padding: 8px 12px; font-size: 0.95rem; border: 1px solid #556; border-radius: 6px; background: #fff; min-width: 220px; cursor: pointer; }
   .hint { color: #8aa; font-size: 0.85rem; }
   .container { flex: 1; display: flex; gap: 12px; padding: 12px; min-height: 0; }
+  @media (max-width: 600px) {
+    .container { flex-direction: column; }
+  }
   .container iframe { flex: 1; border: none; border-radius: 8px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.12); height: 100%; }
   .empty { flex: 1; display: flex; align-items: center; justify-content: center; color: #999; font-size: 1.1rem; }
 </style>
