@@ -23,6 +23,8 @@
   <select id="stationSelect">
     <option value="">-- Vælg station --</option>
   </select>
+  <button id="defaultBtn" style="padding:8px 14px;font-size:0.85rem;border:none;border-radius:6px;background:#2a6;color:#fff;cursor:pointer;display:none;">Sæt som standard</button>
+  <button id="clearBtn" style="padding:8px 14px;font-size:0.85rem;border:none;border-radius:6px;background:#a55;color:#fff;cursor:pointer;display:none;">Fjern standard</button>
   <span class="hint" id="hint">Vælg en station for at se sider</span>
 </header>
 
@@ -78,6 +80,8 @@
   const select = document.getElementById("stationSelect");
   const content = document.getElementById("content");
   const hint = document.getElementById("hint");
+  const defaultBtn = document.getElementById("defaultBtn");
+  const clearBtn = document.getElementById("clearBtn");
 
   // Populate dropdown
   STATIONS.forEach((station, i) => {
@@ -87,11 +91,12 @@
     select.appendChild(opt);
   });
 
-  select.addEventListener("change", () => {
-    const idx = select.value;
-    if (idx === "") {
+  function loadStation(idx) {
+    if (idx === "" || idx === null) {
       content.innerHTML = '<div class="empty">Vælg en station ovenfor</div>';
       hint.textContent = "Vælg en station for at se sider";
+      defaultBtn.style.display = "none";
+      clearBtn.style.display = "none";
       return;
     }
     const station = STATIONS[idx];
@@ -103,7 +108,31 @@
       iframe.setAttribute("loading", "lazy");
       content.appendChild(iframe);
     });
+    defaultBtn.style.display = "inline-block";
+    const saved = localStorage.getItem("defaultStation");
+    clearBtn.style.display = (saved === idx.toString()) ? "inline-block" : "none";
+  }
+
+  select.addEventListener("change", () => loadStation(select.value));
+
+  defaultBtn.addEventListener("click", () => {
+    localStorage.setItem("defaultStation", select.value);
+    clearBtn.style.display = "inline-block";
+    hint.textContent = "✓ " + STATIONS[select.value].name + " sat som standard";
   });
+
+  clearBtn.addEventListener("click", () => {
+    localStorage.removeItem("defaultStation");
+    clearBtn.style.display = "none";
+    hint.textContent = "Standard fjernet";
+  });
+
+  // Load default station on page load
+  const saved = localStorage.getItem("defaultStation");
+  if (saved !== null && STATIONS[saved]) {
+    select.value = saved;
+    loadStation(saved);
+  }
 </script>
 
 </body>
