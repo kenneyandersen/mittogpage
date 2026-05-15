@@ -15,7 +15,7 @@
   @media (max-width: 600px) {
     .container { flex-direction: column; }
   }
-  .container iframe { flex: 1; border: none; border-radius: 8px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.12); height: 100%; transform-origin: top left; }
+  .container iframe { flex: 1; border: none; border-radius: 8px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.12); height: 100%; }
   .empty { flex: 1; display: flex; align-items: center; justify-content: center; color: #999; font-size: 1.1rem; }
 </style>
 </head>
@@ -159,11 +159,7 @@
   function applyZoom() {
     const scale = ZOOM_STEPS[zoomIdx] / 100;
     zoomLevelEl.textContent = ZOOM_STEPS[zoomIdx] + "%";
-    document.querySelectorAll(".container iframe").forEach(iframe => {
-      iframe.style.width = (100 / scale) + "%";
-      iframe.style.height = (100 / scale) + "%";
-      iframe.style.transform = "scale(" + scale + ")";
-    });
+    document.body.style.zoom = scale;
   }
 
   document.getElementById("zoomOut").addEventListener("click", () => {
@@ -181,7 +177,6 @@
   const origLoad = loadStation;
   loadStation = function(idx) {
     origLoad(idx);
-    applyZoom();
   };
   applyZoom();
 </script>
